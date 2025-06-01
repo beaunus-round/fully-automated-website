@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../stores/auth';
 
 defineProps<{
   isScrolled: boolean
 }>();
 
 const router = useRouter();
+const authStore = useAuthStore();
 const mobileMenuOpen = ref(false);
+
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+onMounted(() => {
+  // Initialize auth store when header mounts
+  authStore.initialize();
+});
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -19,6 +28,12 @@ const closeMobileMenu = () => {
 
 const navigateTo = (path: string) => {
   router.push(path);
+  closeMobileMenu();
+};
+
+const handleSignOut = async () => {
+  await authStore.signOut();
+  router.push('/');
   closeMobileMenu();
 };
 </script>
@@ -72,12 +87,16 @@ const navigateTo = (path: string) => {
         >
           Resources
         </router-link>
-        <router-link 
-          to="/demo" 
-          class="btn-primary"
-        >
-          Get a Demo
-        </router-link>
+        
+ In
+          </router-link>
+          <router-link 
+            to="/signup" 
+            class="btn-primary"
+          >
+            Get Started
+          </router-link>
+        </template>
       </nav>
       
       <!-- Mobile Menu Button -->
@@ -148,13 +167,33 @@ const navigateTo = (path: string) => {
         >
           Resources
         </router-link>
-        <router-link 
-          to="/demo" 
-          class="btn-primary w-full text-center"
-          @click="closeMobileMenu"
-        >
-          Get a Demo
-        </router-link>
+        
+        <!-- Auth Navigation Mobile -->
+        <template v-if="isAuthenticated">
+          <router-link 
+            to="/dashboard" 
+            class="text-white/80 hover:text-neon-cyan py-2 transition-colors"
+            active-class="text-neon-cyan"
+            @click="closeMobileMenu"
+          >
+            Dashboard
+          </router-link>
+          <button 
+            @click="handleSignOut"
+            class="text-white/80 hover:text-neon-cyan py-2 transition-colors text-left"
+          >
+            Sign Out
+          </button>
+        </template>
+        <template v-else>
+          <router-link 
+            to="/login" 
+            class="btn-primary w-full text-center"
+            @click="closeMobileMenu"
+          >
+            Login
+          </router-link>
+        </template>
       </div>
     </div>
   </header>
