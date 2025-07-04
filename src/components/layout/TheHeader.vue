@@ -212,6 +212,7 @@ const handleSignOut = async () => {
             to="/login" 
             class="btn-primary w-full text-center"
             @click="closeMobileMenu"
+          >
             Sign In
           </router-link>
         </template>
