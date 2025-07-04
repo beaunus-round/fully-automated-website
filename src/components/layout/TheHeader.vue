@@ -88,7 +88,29 @@ const handleSignOut = async () => {
           Resources
         </router-link>
         
- In
+        <!-- Auth Navigation Desktop -->
+        <template v-if="isAuthenticated">
+          <router-link 
+            to="/dashboard" 
+            class="text-white/80 hover:text-neon-cyan transition-colors"
+            active-class="text-neon-cyan"
+          >
+            Dashboard
+          </router-link>
+          <button 
+            @click="handleSignOut"
+            class="text-white/80 hover:text-neon-cyan transition-colors"
+          >
+            Sign Out
+          </button>
+        </template>
+        <template v-else>
+          <router-link 
+            to="/login" 
+            class="text-white/80 hover:text-neon-cyan transition-colors"
+            active-class="text-neon-cyan"
+          >
+            Sign In
           </router-link>
           <router-link 
             to="/signup" 
